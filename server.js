@@ -9,28 +9,37 @@ app.use(express.static(path.join(__dirname, 'public')));
 const API_KEY = process.env.ANTHROPIC_API_KEY;
 
 app.post('/analyze', async (req, res) => {
-  const { idea, pais, presupuesto } = req.body;
+  const { idea, pais, presupuesto, lang } = req.body;
+  if (!idea) return res.status(400).json({ error: 'Idea required' });
 
-  if (!idea) return res.status(400).json({ error: 'Idea requerida' });
+  const langInstructions = {
+    es: { instruction: 'Responde en español.', verdicts: '"VIABLE" | "PARCIALMENTE VIABLE" | "DIFÍCIL"' },
+    en: { instruction: 'Respond in English.', verdicts: '"VIABLE" | "PARTIALLY VIABLE" | "DIFFICULT"' },
+    it: { instruction: 'Rispondi in italiano.', verdicts: '"FATTIBILE" | "PARZIALMENTE FATTIBILE" | "DIFFICILE"' }
+  };
 
-  const prompt = `Eres un analista de negocios experto. Analiza esta idea de negocio y responde SOLO con un objeto JSON válido, sin texto adicional, sin markdown, sin backticks.
+  const l = langInstructions[lang] || langInstructions['es'];
 
-Idea: ${idea}
-País/mercado: ${pais || 'no especificado'}
-Presupuesto disponible: ${presupuesto || 'no especificado'}
+  const prompt = `You are an expert business analyst. Analyze this business idea and respond ONLY with a valid JSON object, no extra text, no markdown, no backticks.
 
-Responde exactamente con este JSON:
+${l.instruction}
+
+Business idea: ${idea}
+Target market: ${pais || 'not specified'}
+Available budget: ${presupuesto || 'not specified'}
+
+Respond with exactly this JSON structure:
 {
-  "veredicto": "VIABLE" | "PARCIALMENTE VIABLE" | "DIFÍCIL",
-  "puntuacion": número del 1 al 10,
-  "resumen": "2-3 frases ejecutivas sobre la viabilidad",
-  "tiempo_primer_ingreso": "estimación realista ej: 3-6 meses",
-  "coste_arranque": "rango estimado ej: €2.000 - €8.000",
-  "pasos": ["paso 1 concreto", "paso 2", "paso 3", "paso 4", "paso 5"],
-  "oportunidades": ["oportunidad 1", "oportunidad 2", "oportunidad 3"],
-  "riesgos": ["riesgo 1", "riesgo 2", "riesgo 3"],
-  "competidores": ["competidor o alternativa 1", "competidor 2", "competidor 3"],
-  "consejo_final": "un consejo concreto y directo para esta idea específica"
+  "veredicto": ${l.verdicts},
+  "puntuacion": number from 1 to 10,
+  "resumen": "2-3 executive sentences about viability",
+  "tiempo_primer_ingreso": "realistic estimate e.g.: 3-6 months",
+  "coste_arranque": "estimated range e.g.: €2,000 - €8,000",
+  "pasos": ["concrete step 1", "step 2", "step 3", "step 4", "step 5"],
+  "oportunidades": ["opportunity 1", "opportunity 2", "opportunity 3"],
+  "riesgos": ["risk 1", "risk 2", "risk 3"],
+  "competidores": ["competitor or alternative 1", "competitor 2", "competitor 3"],
+  "consejo_final": "one concrete and direct piece of advice for this specific idea"
 }`;
 
   try {
@@ -54,9 +63,10 @@ Responde exactamente con este JSON:
     const result = JSON.parse(clean);
     res.json(result);
   } catch (e) {
-    res.status(500).json({ error: 'Error al analizar. Inténtalo de nuevo.' });
+    res.status(500).json({ error: 'Analysis error. Please try again.' });
   }
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Feasible corriendo en puerto ${PORT}`));
+app.listen(PORT, () => console.log(`Feasible running on port ${PORT}`));
+
