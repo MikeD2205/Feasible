@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feasible — Analiza tu idea de negocio</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green: #1D9E75;
+      --green-light: #E1F5EE;
+      --green-dark: #0F6E56;
+      --amber: #EF9F27;
+      --amber-light: #FAEEDA;
+      --red: #E24B4A;
+      --red-light: #FCEBEB;
+      --text: #1a1a1a;
+      --text-muted: #666;
+      --border: #e5e5e5;
+      --bg: #fafafa;
+      --white: #fff;
+      --radius: 12px;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    header {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .logo {
+      font-family: 'DM Serif Display', serif;
+      font-size: 22px;
+      color: var(--text);
+    }
+
+    .logo span { color: var(--green); }
+
+    .logo-tag {
+      font-size: 11px;
+      background: var(--green-light);
+      color: var(--green-dark);
+      padding: 3px 8px;
+      border-radius: 99px;
+      font-weight: 500;
+    }
+
+    main {
+      max-width: 680px;
+      margin: 3rem auto;
+      padding: 0 1.5rem;
+    }
+
+    h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 36px;
+      line-height: 1.2;
+      margin-bottom: 0.75rem;
+      font-weight: 400;
+    }
+
+    h1 em { color: var(--green); font-style: normal; }
+
+    .subtitle {
+      font-size: 16px;
+      color: var(--text-muted);
+      margin-bottom: 2.5rem;
+      line-height: 1.6;
+    }
+
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 120px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      color: var(--text);
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.2s;
+      background: var(--bg);
+    }
+
+    textarea:focus { border-color: var(--green); background: var(--white); }
+
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+
+    select {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--text);
+      background: var(--bg);
+      outline: none;
+      cursor: pointer;
+    }
+
+    select:focus { border-color: var(--green); }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      background: var(--green);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 16px;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    button:hover { background: var(--green-dark); }
+    button:active { transform: scale(0.99); }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .loading {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-muted);
+      font-size: 14px;
+      padding: 2rem 0;
+    }
+
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--border);
+      border-top-color: var(--green);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .result { margin-top: 2rem; }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 2rem 0;
+    }
+
+    .verdict-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 12px;
+    }
+
+    .verdict-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .dot.green { background: var(--green); }
+    .dot.amber { background: var(--amber); }
+    .dot.red { background: var(--red); }
+
+    .verdict-text {
+      font-size: 20px;
+      font-weight: 500;
+    }
+
+    .score {
+      margin-left: auto;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .score strong { color: var(--text); }
+
+    .summary {
+      margin-top: 10px;
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--text-muted);
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 12px 0;
+    }
+
+    .metric {
+      background: var(--bg);
+      border-radius: 8px;
+      padding: 1rem;
+      border: 1px solid var(--border);
+    }
+
+    .metric-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-bottom: 6px;
+    }
+
+    .metric-value {
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .section-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+
+    ul.steps {
+      padding-left: 1.2rem;
+    }
+
+    ul.steps li {
+      margin-bottom: 6px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .tags-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 99px;
+      margin: 3px 3px 3px 0;
+    }
+
+    .tag.green { background: var(--green-light); color: var(--green-dark); }
+    .tag.red { background: var(--red-light); color: #A32D2D; }
+
+    .advice-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--green);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: 1.25rem;
+      margin-bottom: 12px;
+    }
+
+    .error { color: var(--red); font-size: 14px; padding: 1rem 0; }
+
+    footer {
+      text-align: center;
+      padding: 3rem 1rem 2rem;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    @media (max-width: 500px) {
+      .row, .metrics-grid, .tags-grid { grid-template-columns: 1fr; }
+      h1 { font-size: 28px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">feasi<span>ble</span></div>
+  <div class="logo-tag">beta</div>
+</header>
+
+<main>
+  <h1>Tu idea de negocio,<br><em>analizada en 30 segundos.</em></h1>
+  <p class="subtitle">Describe tu idea y obtén un análisis real: viabilidad, costes, pasos concretos y riesgos. Sin consultores, sin esperas.</p>
+
+  <div class="card">
+    <label>Tu idea de negocio</label>
+    <textarea id="idea" placeholder="Ej: una plataforma web que conecta fotógrafos freelance con empresas para sesiones de producto..."></textarea>
+
+    <div class="row">
+      <div>
+        <label style="margin-top:12px;">País / mercado</label>
+        <select id="pais">
+          <option value="">Selecciona mercado</option>
+          <option value="España">España</option>
+          <option value="Italia">Italia</option>
+          <option value="Portugal">Portugal</option>
+          <option value="Europa">Europa (general)</option>
+          <option value="Global (inglés)">Global (inglés)</option>
+          <option value="Latinoamérica">Latinoamérica</option>
+        </select>
+      </div>
+      <div>
+        <label style="margin-top:12px;">Presupuesto disponible</label>
+        <select id="presupuesto">
+          <option value="">Selecciona rango</option>
+          <option value="menos de €1.000">Menos de €1.000</option>
+          <option value="€1.000 – €5.000">€1.000 – €5.000</option>
+          <option value="€5.000 – €20.000">€5.000 – €20.000</option>
+          <option value="más de €20.000">Más de €20.000</option>
+        </select>
+      </div>
+    </div>
+
+    <button id="btn" onclick="analizar()">Analizar viabilidad →</button>
+  </div>
+
+  <div id="result"></div>
+</main>
+
+<footer>
+  feasible © 2025 · Powered by Claude AI
+</footer>
+
+<script>
+async function analizar() {
+  const idea = document.getElementById('idea').value.trim();
+  const pais = document.getElementById('pais').value;
+  const presupuesto = document.getElementById('presupuesto').value;
+  const resultDiv = document.getElementById('result');
+  const btn = document.getElementById('btn');
+
+  if (!idea) {
+    resultDiv.innerHTML = '<div class="error">Por favor describe tu idea de negocio.</div>';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Analizando...';
+  resultDiv.innerHTML = '<div class="loading"><div class="spinner"></div>Analizando tu idea con IA...</div>';
+
+  try {
+    const res = await fetch('/analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ idea, pais, presupuesto })
+    });
+
+    const r = await res.json();
+
+    if (r.error) throw new Error(r.error);
+
+    const dotClass = r.veredicto === 'VIABLE' ? 'green' : r.veredicto === 'PARCIALMENTE VIABLE' ? 'amber' : 'red';
+
+    resultDiv.innerHTML = `
+      <hr class="divider">
+
+      <div class="verdict-card">
+        <div class="verdict-row">
+          <div class="dot ${dotClass}"></div>
+          <div class="verdict-text">${r.veredicto}</div>
+          <div class="score">Puntuación: <strong>${r.puntuacion}/10</strong></div>
+        </div>
+        <div class="summary">${r.resumen}</div>
+      </div>
+
+      <div class="metrics-grid">
+        <div class="metric">
+          <div class="metric-label">Tiempo al primer ingreso</div>
+          <div class="metric-value">${r.tiempo_primer_ingreso}</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Coste de arranque</div>
+          <div class="metric-value">${r.coste_arranque}</div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-title">Pasos concretos para arrancar</div>
+        <ul class="steps">
+          ${r.pasos.map(p => `<li>${p}</li>`).join('')}
+        </ul>
+      </div>
+
+      <div class="tags-grid">
+        <div class="section-card">
+          <div class="section-title">Oportunidades</div>
+          ${r.oportunidades.map(o => `<span class="tag green">${o}</span>`).join('')}
+        </div>
+        <div class="section-card">
+          <div class="section-title">Riesgos</div>
+          ${r.riesgos.map(o => `<span class="tag red">${o}</span>`).join('')}
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-title">Competidores / alternativas existentes</div>
+        <div style="font-size:14px; color:#666;">${r.competidores.join(' · ')}</div>
+      </div>
+
+      <div class="advice-card">
+        <div class="section-title">Consejo final</div>
+        <div style="font-size:14px; line-height:1.7;">${r.consejo_final}</div>
+      </div>
+    `;
+  } catch(e) {
+    resultDiv.innerHTML = `<div class="error">${e.message || 'Error al analizar. Inténtalo de nuevo.'}</div>`;
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Analizar viabilidad →';
+}
+</script>
+
+</body>
+</html>
