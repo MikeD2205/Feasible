@@ -3,21 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Feasible — Analiza tu idea de negocio</title>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-P3ZRZYHKP8"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-P3ZRZYHKP8');
-</script>
+  <title>Feasible — Analiza tu idea de negocio en 30 segundos</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
       --green: #1D9E75; --green-light: #E1F5EE; --green-dark: #0F6E56;
-      --amber: #EF9F27; --amber-light: #FAEEDA;
-      --red: #E24B4A; --red-light: #FCEBEB;
+      --amber: #EF9F27; --red: #E24B4A; --red-light: #FCEBEB;
       --text: #1a1a1a; --text-muted: #666; --border: #e5e5e5;
       --bg: #fafafa; --white: #fff; --radius: 12px;
     }
@@ -41,10 +33,10 @@
     .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
     select { width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text); background: var(--bg); outline: none; cursor: pointer; }
     select:focus { border-color: var(--green); }
-    button.main-btn { width: 100%; padding: 14px; background: var(--green); color: white; border: none; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500; cursor: pointer; margin-top: 16px; transition: background 0.2s, transform 0.1s; }
+    button.main-btn { width: 100%; padding: 14px; background: var(--green); color: white; border: none; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500; cursor: pointer; margin-top: 16px; transition: background 0.2s; }
     button.main-btn:hover { background: var(--green-dark); }
-    button.main-btn:active { transform: scale(0.99); }
     button.main-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .free-note { font-size: 12px; color: var(--text-muted); text-align: center; margin-top: 8px; }
     .loading { display: flex; align-items: center; gap: 10px; color: var(--text-muted); font-size: 14px; padding: 2rem 0; }
     .spinner { width: 18px; height: 18px; border: 2px solid var(--border); border-top-color: var(--green); border-radius: 50%; animation: spin 0.8s linear infinite; flex-shrink: 0; }
     @keyframes spin { to { transform: rotate(360deg); } }
@@ -73,9 +65,21 @@
     .tag.green { background: var(--green-light); color: var(--green-dark); }
     .tag.red { background: var(--red-light); color: #A32D2D; }
     .advice-card { background: var(--white); border: 1px solid var(--border); border-left: 3px solid var(--green); border-radius: 0 var(--radius) var(--radius) 0; padding: 1.25rem; margin-bottom: 12px; }
+    .paywall-card { background: var(--white); border: 2px solid var(--green); border-radius: var(--radius); padding: 1.5rem; margin-top: 1.5rem; text-align: center; }
+    .paywall-title { font-size: 18px; font-weight: 500; color: var(--text); margin-bottom: 8px; }
+    .paywall-sub { font-size: 14px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.6; }
+    .paywall-price { font-size: 32px; font-weight: 500; color: var(--green); margin-bottom: 4px; }
+    .paywall-price-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 16px; }
+    .paywall-btn { display: inline-block; padding: 14px 32px; background: var(--green); color: white; border: none; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500; cursor: pointer; text-decoration: none; transition: background 0.2s; }
+    .paywall-btn:hover { background: var(--green-dark); }
+    .paywall-features { display: flex; justify-content: center; gap: 16px; margin-bottom: 16px; flex-wrap: wrap; }
+    .paywall-feature { font-size: 13px; color: var(--text-muted); }
+    .paywall-feature::before { content: "✓ "; color: var(--green); font-weight: 500; }
+    .blur-section { position: relative; }
+    .blur-content { filter: blur(5px); pointer-events: none; user-select: none; }
     .error { color: var(--red); font-size: 14px; padding: 1rem 0; }
     footer { text-align: center; padding: 3rem 1rem 2rem; color: var(--text-muted); font-size: 13px; }
-    @media (max-width: 500px) { .row, .metrics-grid, .tags-grid { grid-template-columns: 1fr; } h1 { font-size: 28px; } .lang-selector { gap: 4px; } .lang-btn { padding: 4px 10px; font-size: 12px; } }
+    @media (max-width: 500px) { .row, .metrics-grid, .tags-grid { grid-template-columns: 1fr; } h1 { font-size: 28px; } }
   </style>
 </head>
 <body>
@@ -124,14 +128,17 @@
       </div>
     </div>
     <button class="main-btn" id="btn" onclick="analizar()"></button>
+    <div class="free-note" id="free-note"></div>
   </div>
 
   <div id="result"></div>
 </main>
 
-<footer>feasible © 2025 · Powered by Claude AI</footer>
+<footer>getfeasible.com © 2025 · Powered by Claude AI</footer>
 
 <script>
+const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/test_14AbJ20b30Ezf98dGg7e00';
+
 const T = {
   es: {
     title: 'Tu idea de negocio,', titleEm: 'analizada en 30 segundos.',
@@ -141,14 +148,20 @@ const T = {
     labelBudget: 'Presupuesto disponible', optBudget: 'Selecciona rango',
     btn: 'Analizar viabilidad →', analyzing: 'Analizando...',
     loading: 'Analizando tu idea con IA...',
+    freeNote: 'Primera análisis gratuita — sin tarjeta',
     errorEmpty: 'Por favor describe tu idea de negocio.',
     errorGeneral: 'Error al analizar. Inténtalo de nuevo.',
-    verdict: 'Veredicto', score: 'Puntuación',
+    score: 'Puntuación',
     timeLabel: 'Tiempo al primer ingreso', costLabel: 'Coste de arranque',
     stepsTitle: 'Pasos concretos para arrancar',
     oppTitle: 'Oportunidades', riskTitle: 'Riesgos',
     compTitle: 'Competidores / alternativas existentes',
     adviceTitle: 'Consejo final',
+    paywallTitle: 'Desbloquea el análisis completo',
+    paywallSub: 'Obtén pasos concretos, riesgos, oportunidades, competidores y consejo final personalizado.',
+    paywallFeatures: ['Pasos concretos', 'Riesgos y oportunidades', 'Competidores', 'Consejo final', 'PDF descargable'],
+    paywallBtn: 'Desbloquear por €2.99 →',
+    paywallPriceSub: 'pago único · acceso inmediato',
     promptLang: 'Responde en español.',
     verdicts: { viable: 'VIABLE', partial: 'PARCIALMENTE VIABLE', hard: 'DIFÍCIL' }
   },
@@ -160,14 +173,20 @@ const T = {
     labelBudget: 'Available budget', optBudget: 'Select range',
     btn: 'Analyze viability →', analyzing: 'Analyzing...',
     loading: 'Analyzing your idea with AI...',
+    freeNote: 'First analysis free — no card required',
     errorEmpty: 'Please describe your business idea.',
     errorGeneral: 'Analysis error. Please try again.',
-    verdict: 'Verdict', score: 'Score',
+    score: 'Score',
     timeLabel: 'Time to first revenue', costLabel: 'Startup cost',
     stepsTitle: 'Concrete steps to start',
     oppTitle: 'Opportunities', riskTitle: 'Risks',
     compTitle: 'Competitors / existing alternatives',
     adviceTitle: 'Final advice',
+    paywallTitle: 'Unlock the full analysis',
+    paywallSub: 'Get concrete steps, risks, opportunities, competitors and personalized final advice.',
+    paywallFeatures: ['Concrete steps', 'Risks & opportunities', 'Competitors', 'Final advice', 'PDF download'],
+    paywallBtn: 'Unlock for €2.99 →',
+    paywallPriceSub: 'one-time payment · instant access',
     promptLang: 'Respond in English.',
     verdicts: { viable: 'VIABLE', partial: 'PARTIALLY VIABLE', hard: 'DIFFICULT' }
   },
@@ -178,21 +197,37 @@ const T = {
     labelMarket: 'Paese / mercato', optMarket: 'Seleziona mercato',
     labelBudget: 'Budget disponibile', optBudget: 'Seleziona fascia',
     btn: 'Analizza fattibilità →', analyzing: 'Analizzando...',
-    loading: "Analisi dell'idea in corso con AI...",
+    loading: "Analisi in corso con AI...",
+    freeNote: 'Prima analisi gratuita — senza carta',
     errorEmpty: 'Per favore descrivi la tua idea di business.',
     errorGeneral: "Errore durante l'analisi. Riprova.",
-    verdict: 'Verdetto', score: 'Punteggio',
+    score: 'Punteggio',
     timeLabel: 'Tempo al primo ricavo', costLabel: 'Costo di avvio',
     stepsTitle: 'Passi concreti per iniziare',
     oppTitle: 'Opportunità', riskTitle: 'Rischi',
     compTitle: 'Concorrenti / alternative esistenti',
     adviceTitle: 'Consiglio finale',
+    paywallTitle: "Sblocca l'analisi completa",
+    paywallSub: 'Ottieni passi concreti, rischi, opportunità, concorrenti e consiglio finale personalizzato.',
+    paywallFeatures: ['Passi concreti', 'Rischi e opportunità', 'Concorrenti', 'Consiglio finale', 'Download PDF'],
+    paywallBtn: 'Sblocca per €2.99 →',
+    paywallPriceSub: 'pagamento unico · accesso immediato',
     promptLang: 'Rispondi in italiano.',
     verdicts: { viable: 'FATTIBILE', partial: 'PARZIALMENTE FATTIBILE', hard: 'DIFFICILE' }
   }
 };
 
 let lang = 'es';
+
+function hasUsedFree() {
+  return document.cookie.split(';').some(c => c.trim().startsWith('feasible_used='));
+}
+
+function setUsedFree() {
+  const d = new Date();
+  d.setFullYear(d.getFullYear() + 1);
+  document.cookie = 'feasible_used=1; expires=' + d.toUTCString() + '; path=/';
+}
 
 function setLang(l) {
   lang = l;
@@ -209,6 +244,7 @@ function setLang(l) {
   document.getElementById('label-budget').textContent = t.labelBudget;
   document.getElementById('opt-budget').textContent = t.optBudget;
   document.getElementById('btn').textContent = t.btn;
+  document.getElementById('free-note').textContent = hasUsedFree() ? '' : t.freeNote;
   document.querySelector('html').lang = l;
 }
 
@@ -224,6 +260,11 @@ async function analizar() {
 
   if (!idea) { resultDiv.innerHTML = '<div class="error">' + t.errorEmpty + '</div>'; return; }
 
+  if (hasUsedFree()) {
+    resultDiv.innerHTML = buildPaywall(t);
+    return;
+  }
+
   btn.disabled = true;
   btn.textContent = t.analyzing;
   resultDiv.innerHTML = '<div class="loading"><div class="spinner"></div>' + t.loading + '</div>';
@@ -236,6 +277,8 @@ async function analizar() {
     });
     const r = await res.json();
     if (r.error) throw new Error(r.error);
+
+    setUsedFree();
 
     const dotClass = r.veredicto === t.verdicts.viable ? 'green' : r.veredicto === t.verdicts.partial ? 'amber' : 'red';
 
@@ -253,22 +296,27 @@ async function analizar() {
         <div class="metric"><div class="metric-label">${t.timeLabel}</div><div class="metric-value">${r.tiempo_primer_ingreso}</div></div>
         <div class="metric"><div class="metric-label">${t.costLabel}</div><div class="metric-value">${r.coste_arranque}</div></div>
       </div>
-      <div class="section-card">
-        <div class="section-title">${t.stepsTitle}</div>
-        <ul class="steps">${r.pasos.map(p => '<li>' + p + '</li>').join('')}</ul>
+      <div class="blur-section">
+        <div class="blur-content">
+          <div class="section-card">
+            <div class="section-title">${t.stepsTitle}</div>
+            <ul class="steps">${r.pasos.map(p => '<li>' + p + '</li>').join('')}</ul>
+          </div>
+          <div class="tags-grid">
+            <div class="section-card"><div class="section-title">${t.oppTitle}</div>${r.oportunidades.map(o => '<span class="tag green">' + o + '</span>').join('')}</div>
+            <div class="section-card"><div class="section-title">${t.riskTitle}</div>${r.riesgos.map(o => '<span class="tag red">' + o + '</span>').join('')}</div>
+          </div>
+          <div class="section-card">
+            <div class="section-title">${t.compTitle}</div>
+            <div style="font-size:14px;color:#666;">${r.competidores.join(' · ')}</div>
+          </div>
+          <div class="advice-card">
+            <div class="section-title">${t.adviceTitle}</div>
+            <div style="font-size:14px;line-height:1.7;">${r.consejo_final}</div>
+          </div>
+        </div>
       </div>
-      <div class="tags-grid">
-        <div class="section-card"><div class="section-title">${t.oppTitle}</div>${r.oportunidades.map(o => '<span class="tag green">' + o + '</span>').join('')}</div>
-        <div class="section-card"><div class="section-title">${t.riskTitle}</div>${r.riesgos.map(o => '<span class="tag red">' + o + '</span>').join('')}</div>
-      </div>
-      <div class="section-card">
-        <div class="section-title">${t.compTitle}</div>
-        <div style="font-size:14px;color:#666;">${r.competidores.join(' · ')}</div>
-      </div>
-      <div class="advice-card">
-        <div class="section-title">${t.adviceTitle}</div>
-        <div style="font-size:14px;line-height:1.7;">${r.consejo_final}</div>
-      </div>`;
+      ${buildPaywall(t)}`;
   } catch(e) {
     resultDiv.innerHTML = '<div class="error">' + (e.message || t.errorGeneral) + '</div>';
   }
@@ -276,7 +324,20 @@ async function analizar() {
   btn.disabled = false;
   btn.textContent = t.btn;
 }
+
+function buildPaywall(t) {
+  return `
+    <div class="paywall-card">
+      <div class="paywall-title">${t.paywallTitle}</div>
+      <div class="paywall-sub">${t.paywallSub}</div>
+      <div class="paywall-features">${t.paywallFeatures.map(f => '<span class="paywall-feature">' + f + '</span>').join('')}</div>
+      <div class="paywall-price">€2.99</div>
+      <div class="paywall-price-sub">${t.paywallPriceSub}</div>
+      <a href="${STRIPE_PAYMENT_LINK}" class="paywall-btn">${t.paywallBtn}</a>
+    </div>`;
+}
 </script>
 </body>
 </html>
+
 
